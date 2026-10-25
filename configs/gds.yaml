@@ -1,0 +1,20 @@
+# configs/gds.yaml
+gds:
+  default_projection_name: "user_interaction_projection"
+  louvain:
+    max_levels: 10
+    max_iterations: 10
+    tolerance: 0.0001
+    include_intermediate_communities: false
+    write_property: "louvain_community_id"
+  pagerank:
+    max_iterations: 20
+    damping_factor: 0.85
+    write_property: "pagerank_score"
+  degree:
+    write_property: "degree_centrality"
+  candidate_community_scoring:
+    min_users: 3
+    min_posts: 5
+    flagged_content_ratio_threshold: 0.30
+    note: "Analytical screening thresholds only; requires human review."

@@ -1,0 +1,21 @@
+Metadata-Version: 2.4
+Name: graph-enhanced-lm
+Version: 0.1.0
+Summary: Graph-Enhanced Language Models for Scientific Literature / Social Network Content Propagation Analysis
+Author: BTech CSE Project Team
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: pydantic>=2.7.0
+Requires-Dist: pandas>=2.2.0
+Requires-Dist: numpy>=1.26.0
+Requires-Dist: neo4j>=5.20.0
+Requires-Dist: scikit-learn>=1.5.0
+Requires-Dist: httpx>=0.27.0
+Provides-Extra: ml
+Requires-Dist: torch>=2.2.0; extra == "ml"
+Requires-Dist: transformers>=4.41.0; extra == "ml"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2.0; extra == "dev"

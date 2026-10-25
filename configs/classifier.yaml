@@ -1,0 +1,24 @@
+classifier:
+  mode: "heuristic_fallback"  # Options: "pretrained_transformer", "heuristic_fallback", "dataset_ground_truth"
+  pretrained_model_name: "cardiffnlp/twitter-roberta-base-hate-multiclass-latest"
+  version: "1.0.0"
+  max_length: 256
+  batch_size: 16
+  device: "cpu"
+  taxonomy:
+    - "NORMAL"
+    - "HATE"
+    - "OFFENSIVE"
+    - "COMMUNITY_TARGETED"
+    - "SPAM"
+    - "UNKNOWN"
+  model_label_to_canonical:
+    not_hate: "NORMAL"
+    normal: "NORMAL"
+    neutral: "NORMAL"
+    hate: "HATE"
+    hatespeech: "HATE"
+    offensive: "OFFENSIVE"
+    abusive: "OFFENSIVE"
+    targeted: "COMMUNITY_TARGETED"
+    spam: "SPAM"

@@ -1,0 +1,14 @@
+project:
+  official_title: "Graph-Enhanced Language Models for Scientific Literature"
+  proposed_subtitle: "Applied Knowledge-Graph Analytics and Graph-Grounded LLM Reasoning for Temporal Content Propagation and Community Analysis on Social Networks"
+  version: "0.1.0"
+  random_seed: 42
+  default_election_date: "2026-11-01"
+  timezone: "UTC"
+  paths:
+    raw_data: "data/raw"
+    interim_data: "data/interim"
+    processed_data: "data/processed"
+    synthetic_data: "data/synthetic"
+    outputs_metrics: "outputs/metrics"
+    outputs_logs: "outputs/logs"

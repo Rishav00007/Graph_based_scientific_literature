@@ -1,0 +1,11 @@
+# configs/llm.yaml
+llm:
+  primary_model: "qwen3:8b"
+  fallback_model: "qwen3:4b"
+  provider: "ollama_openai_compat"
+  base_url: "http://localhost:11434/v1"
+  temperature: 0.0
+  max_tokens: 1024
+  max_retries: 2
+  strict_read_only: true
+  default_result_limit: 50

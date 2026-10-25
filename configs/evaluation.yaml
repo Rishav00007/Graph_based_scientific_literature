@@ -1,0 +1,6 @@
+# configs/evaluation.yaml
+evaluation:
+  test_size: 0.2
+  val_size: 0.1
+  group_by_user: true
+  random_seed: 42

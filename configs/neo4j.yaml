@@ -1,0 +1,5 @@
+# configs/neo4j.yaml
+neo4j:
+  batch_size: 500
+  query_timeout_seconds: 15
+  max_read_limit: 100

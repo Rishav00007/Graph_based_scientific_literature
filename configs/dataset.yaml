@@ -1,0 +1,63 @@
+synthetic:
+  random_seed: 42
+  num_users: 48
+  num_posts: 220
+  election_date: "2026-11-01"
+  start_date: "2026-10-01"
+  end_date: "2026-11-12"
+  communities:
+    - id: 0
+      name: "civic_discussion_group"
+      user_count: 16
+      hate_prob: 0.03
+      offensive_prob: 0.05
+      spam_prob: 0.02
+      targeted_prob: 0.02
+    - id: 1
+      name: "tech_science_readers"
+      user_count: 12
+      hate_prob: 0.02
+      offensive_prob: 0.03
+      spam_prob: 0.04
+      targeted_prob: 0.01
+    - id: 2
+      name: "candidate_hate_amplification_cluster"
+      user_count: 10
+      hate_prob: 0.48
+      offensive_prob: 0.22
+      spam_prob: 0.05
+      targeted_prob: 0.15
+    - id: 3
+      name: "candidate_spam_promotion_cluster"
+      user_count: 10
+      hate_prob: 0.05
+      offensive_prob: 0.08
+      spam_prob: 0.62
+      targeted_prob: 0.05
+
+adapters:
+  hatexplain:
+    post_id_field: "post_id"
+    text_field: "post_tokens"
+    label_field: "annotators"
+    has_user_id: false
+    has_timestamp: false
+    has_interactions: false
+    label_mapping:
+      normal: "NORMAL"
+      hatespeech: "HATE"
+      offensive: "OFFENSIVE"
+  hasoc:
+    post_id_field: "text_id"
+    text_field: "text"
+    label_field: "task_1"
+    subtask_field: "task_2"
+    has_user_id: false
+    has_timestamp: false
+    has_interactions: false
+    label_mapping:
+      NOT: "NORMAL"
+      HOF: "OFFENSIVE"
+      HATE: "HATE"
+      OFFN: "OFFENSIVE"
+      PRFN: "OFFENSIVE"
