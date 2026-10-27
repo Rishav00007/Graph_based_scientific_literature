@@ -1,0 +1,62 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+pip-wheel-metadata/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Secrets / local config (keep .env.example tracked) ---
+.env
+.env.*
+!.env.example
+
+# --- Testing / tooling caches ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.ipynb_checkpoints/
+
+# --- Data (generated or downloaded; regenerate with scripts/) ---
+/data/
+!/data/.gitkeep
+
+# --- Outputs: metrics, logs, model artifacts ---
+/outputs/
+/logs/
+*.log
+/models/
+/checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# --- Neo4j docker volumes (if mounted locally) ---
+/neo4j/data/
+/neo4j/logs/
+/neo4j/import/
+/neo4j/plugins/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+.vscode/*
+!.vscode/settings.json
+sash_p.txt

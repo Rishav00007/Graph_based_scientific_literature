@@ -38,9 +38,23 @@ class TextToCypherEngine:
             return match.group(1).strip()
         return raw_output.strip()
 
-    def translate(self, question: str) -> TextToCypherOutput:
-        """Translate a question into validated Cypher without executing it."""
-        raw_llm = self.llm.generate(TEXT_TO_CYPHER_SYSTEM_PROMPT, f"Question: {question}")
+    def translate(self, question: str, previous: Optional[TextToCypherOutput] = None) -> TextToCypherOutput:
+        """Translate a question into validated Cypher without executing it.
+
+        If `previous` is a failed attempt, its query and error are sent back so the model can fix them.
+        """
+        user_prompt = f"Question: {question}"
+        if previous is not None:
+            user_prompt += (
+                f"\n\nYour previous query was:\n```cypher\n{previous.generated_cypher or '(empty)'}\n```\n"
+                f"It failed with this error:\n{previous.validation_error}\n"
+                "Write a corrected query that follows the schema and rules."
+            )
+        try:
+            raw_llm = self.llm.generate(TEXT_TO_CYPHER_SYSTEM_PROMPT, user_prompt)
+        except Exception as exc:
+            # LLM failure (e.g. timeout); "Forbidden" is not in the message, but retrying a timeout rarely helps
+            return TextToCypherOutput(question, "", False, f"LLM error (not retried): {exc}", [])
         candidate = self.extract_cypher_from_text(raw_llm)
         try:
             validated = validate_and_sanitize_cypher(candidate, max_limit=self.max_limit)
@@ -60,16 +74,37 @@ class TextToCypherEngine:
                 rows=[],
             )
 
-    def query_graph(self, question: str, parameters: Optional[Dict[str, Any]] = None) -> TextToCypherOutput:
-        """Translate, validate, and safely execute a read-only Cypher query against Neo4j."""
+    def query_graph(
+        self, question: str, parameters: Optional[Dict[str, Any]] = None, max_retries: int = 2
+    ) -> TextToCypherOutput:
+        """Translate, validate, and safely execute a read-only Cypher query against Neo4j.
+
+        On a validation or execution error, the error is fed back to the LLM for up to `max_retries` fixes.
+        Queries blocked as unsafe are never retried.
+        """
         translation = self.translate(question)
-        if not translation.is_valid or self.neo4j_client is None:
-            return translation
-        try:
-            rows = self.neo4j_client.execute_read(translation.generated_cypher, parameters=parameters)
-            translation.rows = rows
-            return translation
-        except Exception as exc:
-            translation.is_valid = False
-            translation.validation_error = f"Neo4j Execution Error: {exc}"
-            return translation
+        for attempt in range(max_retries + 1):
+            if translation.is_valid and self.neo4j_client is None:
+                return translation
+            if translation.is_valid:
+                try:
+                    translation.rows = self.neo4j_client.execute_read(
+                        translation.generated_cypher, parameters=parameters
+                    )
+                    return translation
+                except Exception as exc:
+                    translation.is_valid = False
+                    translation.validation_error = f"Neo4j Execution Error: {_short_error(exc)}"
+            error = translation.validation_error or ""
+            if "Forbidden" in error or "not retried" in error or attempt == max_retries:
+                return translation
+            translation = self.translate(question, previous=translation)
+        return translation
+
+
+def _short_error(exc: Exception) -> str:
+    """Keep the useful first part of a Neo4j error (the driver adds long GQL status text)."""
+    msg = str(exc)
+    if "{message:" in msg:
+        msg = msg.split("{message:", 1)[1].split("} {gql_status", 1)[0]
+    return msg.strip()[:400]

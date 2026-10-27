@@ -45,6 +45,9 @@ class GDSProjectionManager:
         """
         self.drop_projection_if_exists(graph_name)
 
+        # Clear old derived edges so re-running doesn't keep adding to the weights
+        self.client.execute_write("MATCH ()-[iw:INTERACTED_WITH]->() DELETE iw")
+
         # Derive explicit weighted INTERACTED_WITH relationship with provenance='derived_analytical'
         materialize_cypher = """
         MATCH (u1:User)-[:RETWEETED|REPLIED_TO]->(p:Post)<-[:POSTED]-(u2:User)

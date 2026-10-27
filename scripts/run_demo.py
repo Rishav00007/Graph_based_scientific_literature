@@ -5,7 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from graph_enhanced_lm.classification.evaluation import evaluate_predictions
 from graph_enhanced_lm.classification.transformer_classifier import PostContentClassifier

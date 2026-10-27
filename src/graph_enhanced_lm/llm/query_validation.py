@@ -14,14 +14,18 @@ FORBIDDEN_CYPHER_PATTERNS = [
     r"\bSET\b",
     r"\bREMOVE\b",
     r"\bDROP\b",
-    r"\bLOAD\s+CSV\b",
+    r"\bLOAD\b",
     r"\bFOREACH\b",
-    r"\bCALL\s+dbms\b",
-    r"\bCALL\s+apoc\b",
-    r"\bCALL\s+gds\.\w+\.(write|mutate|drop|project)\b",
+    # Any procedure call (db.*, dbms.*, gds.*, apoc.*, ...). CALL { subquery } stays allowed;
+    # mutations inside a subquery are still caught by the patterns above.
+    r"\bCALL\s*(?!\{)\S",
+    # APOC can run arbitrary Cypher from strings (apoc.cypher.runWrite etc.), even without CALL
+    r"\bAPOC\s*\.",
     r"\bADMIN\b",
     r"\bGRANT\b",
     r"\bREVOKE\b",
+    r"\bDENY\b",
+    r"\bTERMINATE\b",
 ]
 
 ALLOWED_START_KEYWORDS = ("MATCH", "OPTIONAL MATCH", "WITH", "RETURN", "UNWIND")
